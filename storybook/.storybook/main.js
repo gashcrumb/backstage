@@ -1,6 +1,5 @@
-const path = require('path');
-const WebpackPluginFailBuildOnWarning = require('./webpack-plugin-fail-build-on-warning');
-
+import path from 'path';
+import WebpackPluginFailBuildOnWarning from './webpack-plugin-fail-build-on-warning';
 /**
  * This set of stories are the ones that we publish to backstage.io.
  */
@@ -17,8 +16,14 @@ const BACKSTAGE_CORE_STORIES = [
 
 // Some configuration needs to be available directly on the exported object
 const staticConfig = {
-  core: {
-    builder: 'webpack5',
+  docs: { autodocs: true },
+  framework: {
+    name: '@storybook/react-webpack5',
+    options: {
+      builder: {
+        useSWC: true,
+      },
+    },
   },
   addons: [
     '@storybook/addon-controls',
@@ -26,7 +31,6 @@ const staticConfig = {
     '@storybook/addon-actions',
     '@storybook/addon-links',
     '@storybook/addon-storysource',
-    'storybook-dark-mode/register',
   ],
 };
 
@@ -40,8 +44,7 @@ module.exports = Object.assign(({ args }) => {
   const rootPath = '../../';
   const storiesSrcGlob = 'src/**/*.stories.tsx';
 
-  const getStoriesPath = package =>
-    path.posix.join(rootPath, package, storiesSrcGlob);
+  const getStoriesPath = pkg => path.posix.join(rootPath, pkg, storiesSrcGlob);
 
   const packages = args.length === 0 ? BACKSTAGE_CORE_STORIES : args;
   const stories = packages.map(getStoriesPath);
@@ -52,15 +55,6 @@ module.exports = Object.assign(({ args }) => {
     webpackFinal: async config => {
       // Mirror config in packages/cli/src/lib/bundler
       config.resolve.mainFields = ['browser', 'module', 'main'];
-
-      // Remove the default babel-loader for js files, we're using swc instead
-      const [jsLoader] = config.module.rules.splice(0, 1);
-      if (!jsLoader.use[0].loader.includes('babel-loader')) {
-        throw new Error(
-          `Unexpected loader removed from storybook config, ${jsLoader.use[0].loader}`,
-        );
-      }
-
       config.resolve.extensions.push('.ts', '.tsx');
 
       config.module.rules.push(
