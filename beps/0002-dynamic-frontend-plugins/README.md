@@ -37,11 +37,11 @@ When editing BEPs, aim for tightly-scoped, single-topic PRs to keep discussions 
 The summary of the BEP is a few paragraphs long and give a high-level overview of the features to be implemented. It should be possible to read *only* the summary and understand what the BEP is proposing to accomplish and what impact it has for users.
 -->
 
-The dynamic frontend plugins is a way of loading additional frontend plugins at runtime, without the requirement of rebuilding and restarting running backstage instance.
+The dynamic frontend plugins feature is a way of loading additional frontend plugins at runtime, without the requirement of rebuilding and restarting a running backstage instance.
 
 This system should significantly improve frontend plugin management for backstage instances.
 
-The dynamic plugins leverage the declarative UI system to define what plugin and how it should be represented in the browser.
+The dynamic plugins leverage the declarative UI system to define what a plugin is and how it should be represented in the browser.
 
 ## Motivation
 
@@ -62,7 +62,7 @@ know that this has succeeded?
 - turning on and off UI plugins at runtime without the requirement of rebuilding or restarting backstage
 - manage dynamic plugins declaratively
 
-Additional goal might be exploring the scope of a "on demand" rending and loading. Currently, all plugins, or at least some portion of them must be loaded at the UI bootstrap. This approach is not fully dynamic and might be considered a waste of resources. Fully optimizing dynamic plugins loading would require additional changes to the new UI system.
+An additional goal might be exploring the scope of a "on demand" rending and loading. Currently all plugins, or at least some portion of them must be loaded at UI bootstrap. This approach is not fully dynamic and might be considered a waste of resources. Fully optimizing dynamic plugins loading would require additional changes to the new UI system.
 
 ### Non-Goals
 
@@ -82,7 +82,7 @@ implementation.
 
 ### Definition of UI dynamic plugin
 
-Dynamic UI plugin (from now just plugin) is a plugin, that is not part of the output of a backstage instance build. The plugin and its assets are injected into backstage at runtime. In this case, its injected into the browser at some point during user session.
+A dynamic UI plugin (from now just plugin) is a plugin that is not part of the output of a backstage instance build. The plugin and its assets are injected into backstage at runtime. In this case, its injected into the browser at some point during user session.
 
 From the user POV, there is no difference between classic and dynamic plugins.
 
@@ -125,17 +125,17 @@ Plugins should defined declaratively trough configuration. Similar to what was d
 
 ### Plugin registry
 
-Because plugins are not available at build time, some for of registry needs to exist to store the information.
+Because plugins are not available at build time, some sort of registry needs to exist to store the information.
 
 This registry needs to be mutable at runtime (add/remove new plugin metadata) and changes have to be reflected on session refresh.
 
-This is currently issue, as the app config is embedded into JS assets during build time.
+This is currently an issue as the app config is embedded into JS assets during build time.
 
 Each plugin is required to provide manifest file (metadata) in predefined format. This manifest will be used to inject the plugin assets into the browser.
 
 ### Plugin discovery
 
-Plugin discover is a pre-requisite for Plugin registry. This should be responsible for scanning for available plugins and generating/modifying the plugin registry to always keep it up to date.
+Plugin discovery is a pre-requisite for Plugin registry. This should be responsible for scanning for available plugins and generating/modifying the plugin registry to always keep it up to date.
 
 ## Design Details
 
@@ -145,13 +145,13 @@ Plugin discover is a pre-requisite for Plugin registry. This should be responsib
 
 > NOTE Share outcome of testing mixing multiple tools for module federation.
 
-Test should consist of trying to run permutation of webpack/Rspack/vite based shell apps/plugins and discover if we can freely choose any tool, or we should restrict the tooling to just a subset of the available options.
+Test should consist of trying to run permutations of webpack/Rspack/vite based shell apps/plugins and discover if we can freely choose any tool, or if we should restrict the tooling to just a subset of the available options.
 
 ### Plugin manifest
 
-Each plugin should have a manifest file with important metadata. This metadata is used to load the remote assets to browser. Plugin manifest should be part of a build output.
+Each plugin should have a manifest file with important metadata. This metadata is used to load the remote assets to browser. The plugin manifest should be part of a build output.
 
-Manifest should have:
+A manifest should have:
 
 - name of plugin
 - how can be the init container accessed
@@ -420,7 +420,7 @@ Nothing else is required.
 
 ### Plugin storage
 
-Were will the dynamic plugin assets be hosted? Module federation does not strictly require the remote assets to be all hosted on the same origin.
+Where will the dynamic plugin assets be hosted? Module federation does not strictly require the remote assets to be all hosted on the same origin.
 
 Theoretically plugins can be hosted on some "public CDN" which is detached from individual backstage instances.
 
