@@ -37,6 +37,11 @@ export type RemoteSharedDependencies = {
     import?: false | string;
     /** Required version range. */
     requiredVersion: string;
+    /**
+     * Concrete semver for Module Federation at build time (e.g. from the package root’s `package.json`).
+     * Set by the CLI when building remotes so subpath imports like `@mui/material/styles` still resolve a version.
+     */
+    version?: string;
   };
 };
 

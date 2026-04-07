@@ -36,14 +36,24 @@ export function loadModuleFederationHostShared(options?: {
 }): Promise<Record<string, LoadedRuntimeSharedDependency>>;
 
 // @public
+export function getPackageNameFromSharedImportPath(importPath: string): string;
+
+// @public
 export type RemoteSharedDependencies = {
   [name: string]: {
     singleton: boolean;
     eager: boolean;
     import?: false | string;
     requiredVersion: string;
+    version?: string;
   };
 };
+
+// @public
+export function resolveRemoteSharedDependencyVersions(
+  packageDir: string,
+  sharedDependencies: RemoteSharedDependencies,
+): RemoteSharedDependencies;
 
 // @public
 export type RuntimeSharedDependenciesGlobal = {

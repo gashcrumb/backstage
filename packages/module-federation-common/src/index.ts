@@ -34,3 +34,7 @@ export {
   type LoadedRuntimeSharedDependency,
   type RuntimeSharedDependenciesGlobal,
 } from './types';
+export {
+  getPackageNameFromSharedImportPath,
+  resolveRemoteSharedDependencyVersions,
+} from './resolveRemoteSharedDependencyVersions';

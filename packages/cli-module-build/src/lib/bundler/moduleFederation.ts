@@ -25,7 +25,9 @@ import {
   BACKSTAGE_RUNTIME_SHARED_DEPENDENCIES_GLOBAL,
   defaultRemoteSharedDependencies,
   defaultHostSharedDependencies,
+  getPackageNameFromSharedImportPath,
   HostSharedDependencies,
+  resolveRemoteSharedDependencyVersions,
   RuntimeSharedDependenciesGlobal,
 } from '@backstage/module-federation-common';
 import { dirname, join as joinPath, resolve as resolvePath } from 'node:path';
@@ -76,7 +78,10 @@ export async function getModuleFederationRemoteOptions(
       .replaceAll('/', '__')
       .replaceAll('-', '_'),
     exposes,
-    sharedDependencies: defaultRemoteSharedDependencies(),
+    sharedDependencies: resolveRemoteSharedDependencyVersions(
+      packageDir,
+      defaultRemoteSharedDependencies(),
+    ),
   };
 }
 
@@ -154,10 +159,7 @@ function resolveSharedDependencyVersions(
     Object.entries(hostSharedDependencies)
       .filter(([_, sharedDep]) => sharedDep !== undefined)
       .flatMap(([importPath, sharedDep]) => {
-        // Remove any sub-path exports from the import path
-        const moduleName = importPath.startsWith('@')
-          ? importPath.split('/').slice(0, 2).join('/')
-          : importPath.split('/')[0];
+        const moduleName = getPackageNameFromSharedImportPath(importPath);
 
         let version: string;
         try {
